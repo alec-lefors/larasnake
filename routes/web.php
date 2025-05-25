@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn() => new Details(
     author: "",
-    color: new HexColor("#000000"),
+    color: new HexColor("#f56642"),
     head: "",
     tail: "",
     version: "0.0.1",

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Move\Request;
+namespace App\Domains\Game;
 
 use Spatie\LaravelData\Data;
 

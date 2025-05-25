@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Domains\Move;
 
 use App\Domains\Snake\Shout;
+use Spatie\LaravelData\Data;
 
-readonly class MoveResponse
+class MoveResponse extends Data
 {
     public function __construct(
         public Direction $move = Direction::UP,

@@ -23,6 +23,8 @@ class CoordinatesMatrixTest extends TestCase
      */
     public array $unoccupiedCoordinates;
 
+    public CoordinatesMatrix $occupiedCoordinatesMatrix;
+
     public function setUp(): void
     {
         for ($i = 0; $i < self::BOARD_WIDTH; $i++) {
@@ -34,27 +36,32 @@ class CoordinatesMatrixTest extends TestCase
                 }
             }
         }
+
+        $this->occupiedCoordinatesMatrix = new CoordinatesMatrix(
+            $this->occupiedCoordinates,
+            self::BOARD_WIDTH,
+            self::BOARD_HEIGHT
+        );
     }
 
-    public function testSpaceIsEmpty()
+    public function testIsSpaceOccupied()
     {
-        $coordinatesMatrix = new CoordinatesMatrix($this->occupiedCoordinates);
-        foreach ($this->unoccupiedCoordinates as $coordinate) {
-            $this->assertTrue($coordinatesMatrix->spaceIsEmpty($coordinate));
-        }
-    }
-
-    public function testSpaceIsOccupied()
-    {
-        $coordinatesMatrix = new CoordinatesMatrix($this->occupiedCoordinates);
         foreach ($this->occupiedCoordinates as $coordinate) {
-            $this->assertTrue($coordinatesMatrix->spaceIsOccupied($coordinate));
+            $this->assertTrue($this->occupiedCoordinatesMatrix->isSpaceOccupied($coordinate));
+        }
+
+        foreach ($this->unoccupiedCoordinates as $coordinate) {
+            $this->assertFalse($this->occupiedCoordinatesMatrix->isSpaceOccupied($coordinate));
         }
     }
 
     public function testConstructor()
     {
-        $coordinatesMatrix = new CoordinatesMatrix($this->occupiedCoordinates);
+        $coordinatesMatrix = new CoordinatesMatrix(
+            $this->occupiedCoordinates,
+            self::BOARD_WIDTH,
+            self::BOARD_HEIGHT,
+        );
 
         $this->assertIsArray($coordinatesMatrix->matrix);
         foreach ($this->occupiedCoordinates as $coordinate) {

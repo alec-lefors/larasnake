@@ -6,25 +6,30 @@ namespace App\Http\Controllers;
 
 use App\Domains\Move\Direction;
 use App\Domains\Move\MoveResponse;
-use App\Domains\Move\Request\GameState;
+use App\Domains\Move\MoveRequest;
 use App\Domains\Move\ValidMoves;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 class MoveController extends Controller
 {
-    public function __invoke(GameState $data): JsonResponse
+    public function __invoke(MoveRequest $data): JsonResponse
     {
         $validMoves = new ValidMoves($data->board, $data->you->head);
 
-        $direction = Arr::random($validMoves->generate());
+        try {
+            $direction = Arr::random($validMoves->generate());
+        } catch (InvalidArgumentException $e) {
+            $direction = Arr::random(Direction::cases());
+        }
 
         return response()->json(
             new MoveResponse(
                 move: $direction,
                 shout: null,
-            ),
+            )
         );
     }
 }

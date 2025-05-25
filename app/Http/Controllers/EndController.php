@@ -10,6 +10,6 @@ class EndController extends Controller
 {
     public function __invoke(): Response
     {
-        return response()->noContent();
+        return response()->noContent(200);
     }
 }

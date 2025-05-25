@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Domains\Snake\Configuration;
 
 use InvalidArgumentException;
-use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Casts\Cast;
+use Spatie\LaravelData\Casts\Castable;
+use Spatie\LaravelData\Support\Creation\CreationContext;
+use Spatie\LaravelData\Support\DataProperty;
 
-class HexColor extends Data
+readonly class HexColor implements Castable
 {
     public function __construct(
         public string $hexColor,
@@ -32,5 +35,19 @@ class HexColor extends Data
     public function __toString(): string
     {
         return $this->hexColor;
+    }
+
+    public static function dataCastUsing(...$arguments): Cast
+    {
+        return new class implements Cast {
+            public function cast(
+                DataProperty $property,
+                mixed $value,
+                array $properties,
+                CreationContext $context
+            ): mixed {
+                return new HexColor($value);
+            }
+        };
     }
 }

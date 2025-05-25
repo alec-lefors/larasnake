@@ -20,16 +20,12 @@ readonly class ValidMoves
         $invalidSpaces = [];
 
         foreach ($board->snakes as $snake) {
-            $invalidSpaces[] = [
-                ...$snake->body,
-            ];
+            $invalidSpaces = array_merge($invalidSpaces, $snake->body);
         }
 
-        $invalidSpaces[] = [
-            ...$this->board->hazards,
-        ];
+        $invalidSpaces = array_merge($invalidSpaces, $board->hazards);
 
-        $this->invalidSpaces = new CoordinatesMatrix($invalidSpaces);
+        $this->invalidSpaces = new CoordinatesMatrix($invalidSpaces, $this->board->width, $this->board->height);
     }
 
     /**
@@ -44,7 +40,7 @@ readonly class ValidMoves
             $space = $direction->getCoordinates($this->head);
 
             // If that coordinate space is empty, then add it to the valid directions.
-            if ($this->invalidSpaces->spaceIsEmpty($space)) {
+            if (!$this->invalidSpaces->isSpaceOccupied($space)) {
                 $validDirections[] = $direction;
             }
         }
