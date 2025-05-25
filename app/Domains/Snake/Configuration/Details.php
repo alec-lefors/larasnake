@@ -21,7 +21,7 @@ readonly class Details
         return [
             'apiversion' => $this->apiVersion,
             'author' => $this->author,
-            'color' => $this->color,
+            'color' => $this->color->hexColor,
             'head' => $this->head,
             'tail' => $this->tail,
             'version' => $this->version,
