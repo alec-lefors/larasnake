@@ -12,7 +12,7 @@ readonly class Details
         public string $head,
         public string $tail,
         public string $version,
-        public int $apiVersion = 1,
+        public string $apiVersion = "1",
     ) {
     }
 

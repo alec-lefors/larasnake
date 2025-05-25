@@ -13,7 +13,7 @@ Route::get('/', fn() => new Details(
     head: "",
     tail: "",
     version: "0.0.1",
-    apiVersion: 1,
+    apiVersion: "1",
 )->toArray());
 
 Route::post('/move', MoveController::class);
