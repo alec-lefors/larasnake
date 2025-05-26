@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Domains\Move;
 
 use App\Domains\Board\Coordinates;
+use App\Domains\Board\SpaceType;
+use InvalidArgumentException;
 
 enum Direction: string
 {
@@ -15,11 +17,13 @@ enum Direction: string
 
     public function getCoordinates(Coordinates $startingCoords): Coordinates
     {
-        return match ($this) {
-            self::UP => new Coordinates($startingCoords->x, $startingCoords->y + 1),
-            self::DOWN => new Coordinates($startingCoords->x, $startingCoords->y - 1),
-            self::LEFT => new Coordinates($startingCoords->x - 1, $startingCoords->y),
-            self::RIGHT => new Coordinates($startingCoords->x + 1, $startingCoords->y),
+        [$x, $y] = match ($this) {
+            self::UP => [$startingCoords->x, $startingCoords->y + 1],
+            self::DOWN => [$startingCoords->x, $startingCoords->y - 1],
+            self::LEFT => [$startingCoords->x - 1, $startingCoords->y],
+            self::RIGHT => [$startingCoords->x + 1, $startingCoords->y],
         };
+        
+        return new Coordinates($x, $y, SpaceType::OUT_OF_BOUNDS);
     }
 }

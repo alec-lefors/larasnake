@@ -45,7 +45,7 @@ readonly class HexColor implements Castable
                 mixed $value,
                 array $properties,
                 CreationContext $context
-            ): mixed {
+            ): HexColor {
                 return new HexColor($value);
             }
         };
