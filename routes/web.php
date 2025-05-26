@@ -7,14 +7,17 @@ use App\Http\Controllers\MoveController;
 use App\Http\Controllers\StartController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => new Details(
-    author: "",
-    color: new HexColor("#f56642"),
-    head: "",
-    tail: "",
-    version: "0.0.1",
-    apiVersion: "1",
-)->toArray());
+Route::get(
+    '/',
+    fn() => new Details(
+        author: "",
+        color: new HexColor("#f56642"),
+        head: "pixel",
+        tail: "pixel",
+        version: "0.0.1",
+        apiVersion: "1",
+    )->toArray()
+);
 
 Route::post('/move', MoveController::class);
 Route::post('/start', StartController::class);
