@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domains\Board\Coordinates;
 use App\Domains\Move\Directives\FirstBest;
 use App\Domains\Move\Directives\HuntFood;
 use App\Domains\Move\Directives\HuntSnake;
@@ -27,7 +28,10 @@ class MoveController extends Controller
 
     public function __invoke(MoveRequest $data): JsonResponse
     {
-        $edibleFood = $data->board->food;
+        $edibleFood = Arr::reject(
+            $data->board->food,
+            fn(Coordinates $coordinates) => $coordinates->getDistanceTo($data->you->head) > 6
+        );
         $huntFood = new HuntFood($data->you->head, $edibleFood);
         $edibleSnakes = $data->board->getEdibleSnakesBy($data->you);
         $huntSnakes = new HuntSnake($data->you, $edibleSnakes);
