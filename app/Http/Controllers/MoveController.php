@@ -33,7 +33,7 @@ class MoveController extends Controller
             fn(Coordinates $coordinates) => $coordinates->getDistanceTo($data->you->head) > 6
         );
         $huntFood = new HuntFood($data->you->head, $edibleFood);
-        $edibleSnakes = $data->board->getEdibleSnakesBy($data->you);
+        $edibleSnakes = $data->board->getEdibleSnakesBy($data->you, 1);
         $huntSnakes = new HuntSnake($data->you, $edibleSnakes);
 
         $data->board->snakes = Arr::map(

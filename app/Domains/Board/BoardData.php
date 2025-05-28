@@ -108,11 +108,17 @@ class BoardData extends Data
         return $this->matrix[$coords->x][$coords->y] ?? $coords;
     }
 
-    public function getEdibleSnakesBy(BattlesnakeData $by): array
+    /**
+     * @param BattlesnakeData $by     Snake to make size comparisons against.
+     * @param int             $offset By how much more should edible snakes be.
+     *
+     * @return array
+     */
+    public function getEdibleSnakesBy(BattlesnakeData $by, int $offset = 0): array
     {
         return Arr::reject(
             $this->snakes,
-            function (BattlesnakeData $snake) use ($by) {
+            function (BattlesnakeData $snake) use ($by, $offset) {
                 if ($snake->id === $by->id) {
                     return true;
                 }
@@ -121,7 +127,7 @@ class BoardData extends Data
                     return true;
                 }
 
-                if ($snake->length >= $by->length) {
+                if ($snake->length >= $by->length + $offset) {
                     return true;
                 }
 
