@@ -18,6 +18,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use JMGQ\AStar\AStar;
+use Laravel\Octane\Exceptions\TaskException;
+use Laravel\Octane\Exceptions\TaskTimeoutException;
+use Laravel\Octane\Facades\Octane;
 
 class MoveController extends Controller
 {
@@ -26,25 +29,26 @@ class MoveController extends Controller
     ) {
     }
 
+    /**
+     * @throws TaskTimeoutException
+     * @throws TaskException
+     */
     public function __invoke(MoveRequest $data): JsonResponse
     {
-        $edibleFood = Arr::reject(
-            $data->board->food,
-            fn(Coordinates $coordinates) => $coordinates->getDistanceTo($data->you->head) > 6
+        [$edibleFood, $snakes] = Octane::concurrently(
+            [
+                Arr::reject(
+                    $data->board->food,
+                    fn(Coordinates $coordinates) => $coordinates->getDistanceTo($data->you->head) > 6
+                ),
+                $data->board->assignEdibleSnakes($data->you, 1)
+            ]
         );
-        $huntFood = new HuntFood($data->you->head, $edibleFood);
-        $edibleSnakes = $data->board->getEdibleSnakesBy($data->you, 1);
-        $huntSnakes = new HuntSnake($data->you, $edibleSnakes);
 
-        $data->board->snakes = Arr::map(
-            $data->board->snakes,
-            function (BattlesnakeData $snake) use ($data) {
-                if ($data->you->length > $snake->length) {
-                    $snake->edible = true;
-                }
-                return $snake;
-            }
-        );
+        $huntFood = new HuntFood($data->you->head, $edibleFood);
+        $huntSnakes = new HuntSnake($data->you, Arr::where($snakes, fn(BattlesnakeData $snake) => $snake->edible));
+
+        $data->board->snakes = $snakes;
 
         $snakeLogic = new SnakeLogic($data->board, $data->you);
         $pathGenerator = new AStar($snakeLogic);

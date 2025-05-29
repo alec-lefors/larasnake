@@ -112,26 +112,30 @@ class BoardData extends Data
      * @param BattlesnakeData $by     Snake to make size comparisons against.
      * @param int             $offset By how much more should edible snakes be.
      *
-     * @return array
+     * @return BattlesnakeData[]
      */
-    public function getEdibleSnakesBy(BattlesnakeData $by, int $offset = 0): array
+    public function assignEdibleSnakes(BattlesnakeData $by, int $offset = 0): array
     {
-        return Arr::reject(
+        return Arr::map(
             $this->snakes,
             function (BattlesnakeData $snake) use ($by, $offset) {
+                $edible = true;
+
                 if ($snake->id === $by->id) {
-                    return true;
+                    $edible = false;
                 }
 
                 if ($by->squad !== null && $snake->squad === $by->squad) {
-                    return true;
+                    $edible = false;
                 }
 
                 if ($snake->length >= $by->length + $offset) {
-                    return true;
+                    $edible = false;
                 }
 
-                return false;
+                $snake->edible = $edible;
+
+                return $snake;
             }
         );
     }
