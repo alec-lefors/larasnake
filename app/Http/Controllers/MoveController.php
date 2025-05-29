@@ -37,11 +37,11 @@ class MoveController extends Controller
     {
         [$edibleFood, $snakes] = Octane::concurrently(
             [
-                Arr::reject(
+                fn() => Arr::reject(
                     $data->board->food,
                     fn(Coordinates $coordinates) => $coordinates->getDistanceTo($data->you->head) > 6
                 ),
-                $data->board->assignEdibleSnakes($data->you, 1)
+                fn() => $data->board->assignEdibleSnakes($data->you, 1)
             ]
         );
 
